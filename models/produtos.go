@@ -31,6 +31,7 @@ func SelectAll() []Produto {
 			panic(err.Error())
 		}
 
+		p.Id = id
 		p.Nome = nome
 		p.Descricao = descricao
 		p.Preco = preco
@@ -52,5 +53,17 @@ func CreateProduct(nome, descricao string, preco float64, quantidade int) {
 	}
 
 	insertData.Exec(nome, descricao, preco, quantidade)
+	defer db.Close()
+}
+
+func DeleteProduct(id string) {
+	db := db.ConnectDb()
+
+	delete, err := db.Prepare("delete from produtos where id=$1")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	delete.Exec(id)
 	defer db.Close()
 }
